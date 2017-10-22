@@ -17,13 +17,5 @@ namespace DNT2017
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
                 .Build();
-
-        public IServiceProvider ConfigureContainer() =>
-            new ServiceCollection()
-                .AddTransient<ITransientService, TransientService>()
-                .AddScoped<IScopedService, ScopedService>()
-                .AddSingleton<ISingletonService, SingletonService>()
-                .AddSingleton<ISingletomInstanceService>(new SingletonService("42"))
-                .BuildServiceProvider();
     }
 }

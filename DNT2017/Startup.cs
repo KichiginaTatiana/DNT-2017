@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DNT2017.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,11 @@ namespace DNT2017
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<ITransientService, TransientService>()
+                .AddScoped<IScopedService, ScopedService>()
+                .AddSingleton<ISingletonService, SingletonService>()
+                .AddSingleton<ISingletomInstanceService>(new SingletonService("11111111-1111-1111-1111-111111111111"));
+
             services.AddMvc();
         }
 
@@ -43,7 +49,7 @@ namespace DNT2017
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=DependencyInjection}/{action=Index}/{id?}");
             });
         }
     }
