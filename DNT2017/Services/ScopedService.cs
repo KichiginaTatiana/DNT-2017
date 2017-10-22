@@ -2,9 +2,8 @@
 
 namespace DNT2017.Services
 {
-    public interface IScopedService
+    public interface IScopedService : IGuid
     {
-        Guid Guid { get; set; }
     }
 
     public class ScopedService : IScopedService
@@ -13,7 +12,7 @@ namespace DNT2017.Services
 
         public ScopedService()
         {
-            Guid = new Guid();
+            Guid = Guid.NewGuid();
         }
     }
 }

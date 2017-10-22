@@ -2,9 +2,8 @@
 
 namespace DNT2017.Services
 {
-    public interface ISingletonService
+    public interface ISingletonService : IGuid
     {
-        Guid Guid { get; set; }
     }
 
     public class SingletonService : ISingletonService, ISingletomInstanceService
@@ -13,16 +12,16 @@ namespace DNT2017.Services
 
         public SingletonService()
         {
-            Guid = new Guid();
+            Guid = Guid.NewGuid();
         }
 
-        public SingletonService(string guid)
+        public SingletonService(Guid guid)
         {
-            Guid = new Guid(guid);
+            Guid = guid;
         }
     }
 
-    public interface ISingletomInstanceService
+    public interface ISingletomInstanceService 
     {
     }
 }

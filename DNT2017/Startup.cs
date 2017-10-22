@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DNT2017.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,7 +22,8 @@ namespace DNT2017
             services.AddTransient<ITransientService, TransientService>()
                 .AddScoped<IScopedService, ScopedService>()
                 .AddSingleton<ISingletonService, SingletonService>()
-                .AddSingleton<ISingletomInstanceService>(new SingletonService("11111111-1111-1111-1111-111111111111"));
+                .AddSingleton<ISingletomInstanceService>(new SingletonService(Guid.Empty))
+                .AddTransient<IBigService, BigService>();
 
             services.AddMvc();
         }

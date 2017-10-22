@@ -2,9 +2,8 @@
 
 namespace DNT2017.Services
 {
-    public interface ITransientService
+    public interface ITransientService : IGuid
     {
-        Guid Guid { get; set; }
     }
 
     public class TransientService : ITransientService
@@ -13,7 +12,7 @@ namespace DNT2017.Services
 
         public TransientService()
         {
-            Guid = new Guid();
+            Guid = Guid.NewGuid();
         }
     }
 }
