@@ -1,0 +1,7 @@
+C:\Users\Татиана\Documents\Visual Studio 2017\Projects\DNT-2017\DNT2017\bin\Debug\netcoreapp2.0\DNT2017.deps.json
+C:\Users\Татиана\Documents\Visual Studio 2017\Projects\DNT-2017\DNT2017\bin\Debug\netcoreapp2.0\DNT2017.runtimeconfig.json
+C:\Users\Татиана\Documents\Visual Studio 2017\Projects\DNT-2017\DNT2017\bin\Debug\netcoreapp2.0\DNT2017.runtimeconfig.dev.json
+C:\Users\Татиана\Documents\Visual Studio 2017\Projects\DNT-2017\DNT2017\bin\Debug\netcoreapp2.0\DNT2017.dll
+C:\Users\Татиана\Documents\Visual Studio 2017\Projects\DNT-2017\DNT2017\obj\Debug\netcoreapp2.0\DNT2017.csproj.CoreCompileInputs.cache
+C:\Users\Татиана\Documents\Visual Studio 2017\Projects\DNT-2017\DNT2017\obj\Debug\netcoreapp2.0\DNT2017.AssemblyInfoInputs.cache
+C:\Users\Татиана\Documents\Visual Studio 2017\Projects\DNT-2017\DNT2017\obj\Debug\netcoreapp2.0\DNT2017.AssemblyInfo.cs
