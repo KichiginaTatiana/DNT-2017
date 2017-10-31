@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DNT2017.Services;
-using Microsoft.AspNetCore.Http;
+﻿using DNT2017.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DNT2017.Controllers

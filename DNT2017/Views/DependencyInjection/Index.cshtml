@@ -1,16 +1,241 @@
-﻿
+﻿<!DOCTYPE html>
+<html>
+<head>
+</head>
+
+<body>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Механизм внедрения зависимостей в ASP.NET Core";
 }
 
-<p>@ViewBag.Transient.Guid</p>
-<p>@ViewBag.Scoped.Guid</p>
-<p>@ViewBag.Singleton.Guid</p>
-<p>@ViewBag.SingletonInstance.Guid</p>
+<h2>Механизм внедрения зависимостей в ASP.NET Core</h2>
+<h3>SOLID</h3>
+<ul type="square">
+    <li><b>Single responsibility</b> (Принцип единственной ответственности) обо­зна­ча­ет, что каж­дый объ­ект дол­жен иметь одну обя­зан­ность и эта обя­зан­ность должна быть пол­но­стью инкап­су­ли­ро­вана в класс.</li>
+    <li><b>Open-closed</b> (Принцип открытости/закрытости) декларирует, что про­грамм­ные сущ­но­сти (клас­сы, моду­ли, функ­ции и т. п.) должны быть открыты для рас­ши­ре­ния, но закрыты для изме­не­ния.</li>
+    <li><b>Liskov substitution</b> (Прин­цип под­ста­новки Бар­бары Лис­ков) — функ­ции, кото­рые исполь­зуют базо­вый тип, должны иметь воз­мож­ность исполь­зо­вать под­типы базо­вого типа не зная об этом.</li>
+    <li><b>Interface segregation</b> (Прин­цип раз­де­ле­ния интер­фейса) — кли­енты не должны зави­сеть от мето­дов, кото­рые они не исполь­зуют. Прин­цип раз­де­ле­ния интер­фей­сов гово­рит о том, что слиш­ком «тол­стые» интер­фейсы необ­хо­димо раз­де­лять на более малень­кие и спе­ци­фи­че­ские, чтобы кли­енты малень­ких интер­фей­сов знали только о мето­дах, кото­рые необ­хо­димы им в рабо­те. В ито­ге, при изме­не­нии метода интер­фейса не должны меняться кли­енты, кото­рые этот метод не исполь­зуют.</li>
+    <li><b>Dependency inversion</b> (Прин­цип инвер­сии зави­си­мо­стей) — модули верх­них уров­ней не должны зави­сеть от моду­лей ниж­них уров­ней, а оба типа моду­лей должны зави­сеть от абстрак­ций; сами абстрак­ции не должны зави­сеть от дета­лей, а вот детали должны зави­сеть от абстракций.</li>
+</ul>
 
-<p>@ViewBag.Service.TransientService.Guid</p>
-<p>@ViewBag.Service.ScopedService.Guid</p>
-<p>@ViewBag.Service.SingletonService.Guid</p>
-<p>@ViewBag.Service.SingletomInstanceService.Guid</p>
+<h3>Принцип Dependency Inversion</h3>
+<p>Принцип инверсии зависимостей говорит о том, что конкретика должна зависеть от абстракций, а не наоборот. Абстракции – сущности которые могут поменять свое поведение (интерфейсы, абстрактные классы, делегаты или классы с виртуальными методами) и предлагает применять абстракции и полиморфизм. 
+    Для этого необходимо проверить, зависят ли классы от каких-то других классов(непосредственно инстанцируют объекты других классов и т.д, что является <b>неявным управлением зависимостями</b>) и если эта зависимость имеет место, заменить на зависимость от абстракции. 
+</p>  
+
+<pre class="no-result"> <code data-language="c#" class="rainbow">public class BigService : IBigService
+    {
+        public ITransientService TransientService { get; }
+        public IScopedService ScopedService { get; }
+        public ISingletonService SingletonService { get; }
+        public ISingletomInstanceService SingletomInstanceService { get; }
+
+        public BigService()
+        {
+            TransientService = new TransientService();
+            ScopedService = new ScopedService();
+            SingletonService = new SingletonService();
+            SingletomInstanceService = new SingletomInstanceService();
+        }
+    }</code>
+</pre>
+
+<p>После рефакторинга должно остаться только одно место с зависимостями от конкретики (загончик для операторов new).
+    При явном управлении зависимостями ожидается, что все нужные значения будут переданы в конструктор извне. Явными следует делать имена файлов, пути, порты, неудобны зависимости(файлы, консоль, UI, сеть, БД и т.д.), другие сервисы, алгоритмы, если их понадобится менять(стратегии), реализацию структуры данных, если ее понадобится менять.
+</p>
+
+<pre class="no-result"> <code data-language="c#" class="rainbow">public class BigService : IBigService
+    {
+        public ITransientService TransientService { get; }
+        public IScopedService ScopedService { get; }
+        public ISingletonService SingletonService { get; }
+        public ISingletomInstanceService SingletomInstanceService { get; }
+
+        public BigService(ITransientService transientService, IScopedService scopedService,
+            ISingletonService singletonService, ISingletomInstanceService singletomInstanceService)
+        {
+            TransientService = transientService;
+            ScopedService = scopedService;
+            SingletonService = singletonService;
+            SingletomInstanceService = singletomInstanceService;
+        }
+    }</code>
+</pre>
+
+<p> После применения принципов единственной ответственности и инверсии зависимостей диаграмма классов должна выглядеть примерно так:</p>
+
+<img src="images/class_diagram.JPG" alt="">
+
+<p>
+    <b>Явное управление зависимостями:</b>
+    <ul type="square">
+        <li>Не вызывать статические методы</li>
+        <li>Не вызывать конструкторы</li>
+        <li>Ссылки на объекты передавать в конструктор</li>
+    </ul>
+</p>
+    
+<p>Зависимости в конструктор передает кто-то свыше, а ему кто свыше и т.д.</p>
+    
+<img src="images/need_to_go_deeper.jpg" alt="" />
+
+<h3>Встроенный IoC-контейнер</h3>
+<p>Контейнер позволяет автоматизировать создание графа зависимостей программы. Он занимается рекурсивным созданием классов через инъекцию зависимостей в конструктор (или в поля, свойства). 
+    DI контейнер конфигурируется, ему рассказывают, какие реализации использовать в качестве каких абстракций. После чего его можно использовать. 
+    Если попросить у контейнера класс, который не зависит от контейнера и считает, что все зависимости будут поданы сверху через конструктор. Контейнер ищет у класса подходящий конструктор, которому нужна другая абстракция абстракция, контейнер начинает создавать эту абстракцию и рекурсивно спускается, пока не дойдет до абстракции с конструктором без параметров. 
+    В .NET есть встроенный контейнер <code>IServiceProvider</code>, он живет в пространстве имен <code>System</code>. 
+    Чтобы его сконфигурировать и создать понадобится <code>IServiceCollection</code> из пространств имен <code>Microsoft.Extensions.DependencyInjection</code> и <code>Microsoft.Extensions.DependencyInjection.Abstractions</code>.
+</p>
+
+<h3>Примеры регистрации и внедрения зависимостей</h3>
+<p>Добавление зависимостей в контейнер производится с помощью дженерик методов <code>AddTransient&lt;TServise, TImplementation&gt;(IServiseCollection)</code>, <code>AddScoped&lt;TServise, TImplementation&gt;(IServiseCollection)</code>, <code>AddSingleton&lt;TServise, TImplementation&gt;(IServiseCollection)</code> класса <code>ServiceCollection</code>.</p>
+
+<pre class="no-result"> <code data-language="c#" class="rainbow">var serviceCollection = new ServiceCollection()
+    .AddTransient&lt;ITransientService, TransientService&gt;()
+    .AddScoped&lt;IScopedService, ScopedService&gt;()
+    .AddSingleton&lt;ISingletonService, SingletonService&gt;()
+    .AddSingleton&lt;ISingletomInstanceService&gt;(new SingletonService(Guid.Empty))
+    .AddTransient&lt;IBigService, BigService&gt;();
+
+var container = serviceCollection.BuildServiceProvider();</code>
+</pre>
+    
+<p>В ASP.NET Core регистрация зависимостей происходит в методе <code>ConfigureServices()</code> класса <code>Startup</code>.</p>
+    
+<pre class="no-result"> <code data-language="c#" class="rainbow">public class Startup
+    {
+     ...
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddTransient&lt;ITransientService, TransientService&gt;()
+                .AddScoped&lt;IScopedService, ScopedService&gt;()
+                .AddSingleton&lt;ISingletonService, SingletonService&gt;()
+                .AddSingleton&lt;ISingletomInstanceService&gt;(new SingletonService(Guid.Empty))
+                .AddTransient&lt;IBigService, BigService&gt;();
+
+            services.AddMvc();
+        }
+    ...
+    }</code>
+</pre>
+
+<p>Вытащить из контейнера реализацию <code>ITransientService</code> можно следующим образом:</p>
+
+<pre class="no-result"> <code data-language="c#" class="rainbow">var transientService = container.GetService&lt;ITransientService&gt;();</code>
+</pre>
+    
+<p>Внедрять зависимости можно: 
+    <ul type="square">
+        <li>
+            В конструктор
+            <pre class="no-result"> <code data-language="c#" class="rainbow">public class BigService : IBigService
+    {
+        public ITransientService TransientService { get; }
+
+        public BigService(ITransientService transientService)
+        {
+            TransientService = transientService;
+        }
+    }</code>
+</pre>
+        </li>
+        <li>В свойство(необходим сеттер, используется для инжектирования необязательных зависимостей. Использовать не рекомендуется, т.к. порождает неявные зависимости)
+            <pre class="no-result"> <code data-language="c#" class="rainbow">public class BigService : IBigService
+    {
+        public ITransientService TransientService { get; set; }
+    }</code>
+</pre>
+        </li>
+        <li>В метод(используется редко в случаях, когда классу зависимость нужна только в определенном методе)
+            <pre class="no-result"> <code data-language="c#" class="rainbow">public class BigService : IBigService
+    {
+        public ITransientService TransientService { get; }
+
+        public StartBigService(ITransientService transientService)
+        {
+            ...
+        }
+    }</code>
+</pre></li>
+    </ul>
+</p>
+
+<h3>Жизненный цикл компонентов</h3>
+<p>Зависимости различаются сроком жизни. Они могут быть:
+    <ul type="square">
+        <li><b>Singleton</b> - реализация <code>IServiceCollection</code> гарантирует, что будет создавать только один экземпляр типа <code>TService</code>, а значит, он будет singleton-экземпляром. 
+        После первого вызова <code>GetService</code>, инициирующего создание экземпляра <code>TService</code>, тот же экземпляр всегда будет возвращаться в течение срока жизни <code>IServiceCollection</code>.</li>
+        <li><b>Transient</b> - реализация <code>IServiceCollection</code> возвращает новый экземпляр при каждом вызове <code>GetService</code>, гарантируя, что вы всегда будете получать новый экземпляр типа <code>TService</code>.</li>
+        <li><b>Scoped</b> - реализация <code>IServiceCollection</code> возвращает один и тот же экземпляр внутри данного контекста и создает новый экземпляр всякий раз, когда контекст (известный как область видимости) изменяется.</li>
+        <li><b>Instance</b> - вызов <code>GetService</code> не только вернет объект типа <code>TService</code>, но и гарантирует, что им будет специфический <code>ImplementationInstance</code>, зарегистрированный с помощью <code>AddInstance</code>. 
+        Иначе говоря, регистрация с помощью <code>AddInstance</code> сохраняет экземпляр специфического <code>ImplementationInstance</code>, чтобы он мог возвращаться при каждом вызове <code>GetService</code> с параметром-типом <code>TService</code> метода <code>AddInstance</code>.</li>
+    </ul>
+</p>
+    
+<pre class="no-result"> <code data-language="c#" class="rainbow">public class DependencyInjectionController : Controller
+    {
+        public ITransientService TransientService { get; }
+        public IScopedService ScopedService { get; }
+        public ISingletonService SingletonService { get; }
+        public ISingletomInstanceService SingletomInstanceService { get; }
+        public IBigService BigService { get; }
+
+        public DependencyInjectionController(ITransientService transientService, IScopedService scopedService,
+            ISingletonService singletonService, ISingletomInstanceService singletomInstanceService, IBigService bigService)
+        {
+            TransientService = transientService;
+            ScopedService = scopedService;
+            SingletonService = singletonService;
+            SingletomInstanceService = singletomInstanceService;
+            BigService = bigService;
+        }
+
+        public IActionResult Index()
+        {
+            ViewBag.Transient = TransientService;
+            ViewBag.Scoped = ScopedService;
+            ViewBag.Singleton = SingletonService;
+            ViewBag.SingletonInstance = SingletomInstanceService;
+            
+            ViewBag.Service = BigService;
+            return View();
+        }
+    }</code>
+</pre>
+    
+<pre class="no-result"> <code data-language="c#" class="rainbow">public class BigService : IBigService
+    {
+        public ITransientService TransientService { get; }
+        public IScopedService ScopedService { get; }
+        public ISingletonService SingletonService { get; }
+        public ISingletomInstanceService SingletomInstanceService { get; }
+
+        public BigService(ITransientService transientService, IScopedService scopedService,
+            ISingletonService singletonService, ISingletomInstanceService singletomInstanceService)
+        {
+            TransientService = transientService;
+            ScopedService = scopedService;
+            SingletonService = singletonService;
+            SingletomInstanceService = singletomInstanceService;
+        }
+    }</code>
+</pre>
+    
+<h4>DependencyInjectionController</h4>
+
+<p><b>Transient</b> @ViewBag.Transient.Guid</p>
+<p><b>Scoped</b> @ViewBag.Scoped.Guid</p>
+<p><b>Singleton</b> @ViewBag.Singleton.Guid</p>
+<p><b>Instance</b> @ViewBag.SingletonInstance.Guid</p>
+    
+<h4>BigService</h4>
+
+<p><b>Transient</b> @ViewBag.Service.TransientService.Guid</p>
+<p><b>Scoped</b> @ViewBag.Service.ScopedService.Guid</p>
+<p><b>Singleton</b> @ViewBag.Service.SingletonService.Guid</p>
+<p><b>Instance</b> @ViewBag.Service.SingletomInstanceService.Guid</p>
 
 
+</body>
+
+</html>
