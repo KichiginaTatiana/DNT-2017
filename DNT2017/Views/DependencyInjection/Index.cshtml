@@ -23,43 +23,43 @@
     Для этого необходимо проверить, зависят ли классы от каких-то других классов(непосредственно инстанцируют объекты других классов и т.д, что является <b>неявным управлением зависимостями</b>) и если эта зависимость имеет место, заменить на зависимость от абстракции. 
 </p>  
 
-<pre class="no-result"> <code data-language="c#" class="rainbow">public class BigService : IBigService
-    {
-        public ITransientService TransientService { get; }
-        public IScopedService ScopedService { get; }
-        public ISingletonService SingletonService { get; }
-        public ISingletomInstanceService SingletomInstanceService { get; }
+<pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> BigService <span style='color:#d2cd86; '>:</span> IBigService
+    <span style='color:#b060b0; '>{</span>
+    <span style='color:#e66170; font-weight:bold; '>public</span> ITransientService TransientService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
+    <span style='color:#e66170; font-weight:bold; '>public</span> IScopedService ScopedService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
+    <span style='color:#e66170; font-weight:bold; '>public</span> ISingletonService SingletonService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
+    <span style='color:#e66170; font-weight:bold; '>public</span> ISingletomInstanceService SingletomInstanceService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
 
-        public BigService()
-        {
-            TransientService = new TransientService();
-            ScopedService = new ScopedService();
-            SingletonService = new SingletonService();
-            SingletomInstanceService = new SingletomInstanceService();
-        }
-    }</code>
+    <span style='color:#e66170; font-weight:bold; '>public</span> BigService<span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span>
+    <span style='color:#b060b0; '>{</span>
+            TransientService <span style='color:#d2cd86; '>=</span> <span style='color:#e66170; font-weight:bold; '>new</span> TransientService<span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span><span style='color:#b060b0; '>;</span>
+            ScopedService <span style='color:#d2cd86; '>=</span> <span style='color:#e66170; font-weight:bold; '>new</span> ScopedService<span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span><span style='color:#b060b0; '>;</span>
+            SingletonService <span style='color:#d2cd86; '>=</span> <span style='color:#e66170; font-weight:bold; '>new</span> SingletonService<span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span><span style='color:#b060b0; '>;</span>
+            SingletomInstanceService <span style='color:#d2cd86; '>=</span> <span style='color:#e66170; font-weight:bold; '>new</span> SingletomInstanceService<span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span><span style='color:#b060b0; '>;</span>
+    <span style='color:#b060b0; '>}</span>
+    <span style='color:#b060b0; '>}</span>
 </pre>
 
 <p>После рефакторинга должно остаться только одно место с зависимостями от конкретики (загончик для операторов new).
     При явном управлении зависимостями ожидается, что все нужные значения будут переданы в конструктор извне. Явными следует делать имена файлов, пути, порты, неудобны зависимости(файлы, консоль, UI, сеть, БД и т.д.), другие сервисы, алгоритмы, если их понадобится менять(стратегии), реализацию структуры данных, если ее понадобится менять.
 </p>
 
-<pre class="no-result"> <code data-language="c#" class="rainbow">public class BigService : IBigService
-    {
-        public ITransientService TransientService { get; }
-        public IScopedService ScopedService { get; }
-        public ISingletonService SingletonService { get; }
-        public ISingletomInstanceService SingletomInstanceService { get; }
+<pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> BigService <span style='color:#d2cd86; '>:</span> IBigService
+    <span style='color:#b060b0; '>{</span>
+        <span style='color:#e66170; font-weight:bold; '>public</span> ITransientService TransientService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
+        <span style='color:#e66170; font-weight:bold; '>public</span> IScopedService ScopedService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
+        <span style='color:#e66170; font-weight:bold; '>public</span> ISingletonService SingletonService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
+        <span style='color:#e66170; font-weight:bold; '>public</span> ISingletomInstanceService SingletomInstanceService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
 
-        public BigService(ITransientService transientService, IScopedService scopedService,
-            ISingletonService singletonService, ISingletomInstanceService singletomInstanceService)
-        {
-            TransientService = transientService;
-            ScopedService = scopedService;
-            SingletonService = singletonService;
-            SingletomInstanceService = singletomInstanceService;
-        }
-    }</code>
+        <span style='color:#e66170; font-weight:bold; '>public</span> BigService<span style='color:#d2cd86; '>(</span>ITransientService transientService<span style='color:#d2cd86; '>,</span> IScopedService scopedService<span style='color:#d2cd86; '>,</span>
+            ISingletonService singletonService<span style='color:#d2cd86; '>,</span> ISingletomInstanceService singletomInstanceService<span style='color:#d2cd86; '>)</span>
+        <span style='color:#b060b0; '>{</span>
+            TransientService <span style='color:#d2cd86; '>=</span> transientService<span style='color:#b060b0; '>;</span>
+            ScopedService <span style='color:#d2cd86; '>=</span> scopedService<span style='color:#b060b0; '>;</span>
+            SingletonService <span style='color:#d2cd86; '>=</span> singletonService<span style='color:#b060b0; '>;</span>
+            SingletomInstanceService <span style='color:#d2cd86; '>=</span> singletomInstanceService<span style='color:#b060b0; '>;</span>
+        <span style='color:#b060b0; '>}</span>
+    <span style='color:#b060b0; '>}</span>
 </pre>
 
 <p> После применения принципов единственной ответственности и инверсии зависимостей диаграмма классов должна выглядеть примерно так:</p>
@@ -90,73 +90,74 @@
 <h3>Примеры регистрации и внедрения зависимостей</h3>
 <p>Добавление зависимостей в контейнер производится с помощью дженерик методов <code>AddTransient&lt;TServise, TImplementation&gt;(IServiseCollection)</code>, <code>AddScoped&lt;TServise, TImplementation&gt;(IServiseCollection)</code>, <code>AddSingleton&lt;TServise, TImplementation&gt;(IServiseCollection)</code> класса <code>ServiceCollection</code>.</p>
 
-<pre class="no-result"> <code data-language="c#" class="rainbow">var serviceCollection = new ServiceCollection()
-    .AddTransient&lt;ITransientService, TransientService&gt;()
-    .AddScoped&lt;IScopedService, ScopedService&gt;()
-    .AddSingleton&lt;ISingletonService, SingletonService&gt;()
-    .AddSingleton&lt;ISingletomInstanceService&gt;(new SingletonService(Guid.Empty))
-    .AddTransient&lt;IBigService, BigService&gt;();
+<pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>var</span> serviceCollection <span style='color:#d2cd86; '>=</span> <span style='color:#e66170; font-weight:bold; '>new</span> ServiceCollection<span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span>
+    <span style='color:#d2cd86; '>.</span>AddTransient<span style='color:#d2cd86; '>&lt;</span>ITransientService<span style='color:#d2cd86; '>,</span> TransientService<span style='color:#d2cd86; '>></span><span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span>
+    <span style='color:#d2cd86; '>.</span>AddScoped<span style='color:#d2cd86; '>></span>IScopedService<span style='color:#d2cd86; '>,</span> ScopedService<span style='color:#d2cd86; '>></span><span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span>
+    <span style='color:#d2cd86; '>.</span>AddSingleton<span style='color:#d2cd86; '>></span>ISingletonService<span style='color:#d2cd86; '>,</span> SingletonService<span style='color:#d2cd86; '>></span><span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span>
+    <span style='color:#d2cd86; '>.</span>AddSingleton<span style='color:#d2cd86; '>></span>ISingletomInstanceService<span style='color:#d2cd86; '>></span><span style='color:#d2cd86; '>(</span><span style='color:#e66170; font-weight:bold; '>new</span> SingletonService<span style='color:#d2cd86; '>(</span>Guid<span style='color:#d2cd86; '>.</span>Empty<span style='color:#d2cd86; '>)</span><span style='color:#d2cd86; '>)</span>
+    <span style='color:#d2cd86; '>.</span>AddTransient<span style='color:#d2cd86; '>></span>IBigService<span style='color:#d2cd86; '>,</span> BigService<span style='color:#d2cd86; '>></span><span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span><span style='color:#b060b0; '>;</span>
 
-var container = serviceCollection.BuildServiceProvider();</code>
+<span style='color:#e66170; font-weight:bold; '>var</span> container <span style='color:#d2cd86; '>=</span> serviceCollection<span style='color:#d2cd86; '>.</span>BuildServiceProvider<span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span><span style='color:#b060b0; '>;</span>
 </pre>
     
 <p>В ASP.NET Core регистрация зависимостей происходит в методе <code>ConfigureServices()</code> класса <code>Startup</code>.</p>
     
-<pre class="no-result"> <code data-language="c#" class="rainbow">public class Startup
-    {
-     ...
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddTransient&lt;ITransientService, TransientService&gt;()
-                .AddScoped&lt;IScopedService, ScopedService&gt;()
-                .AddSingleton&lt;ISingletonService, SingletonService&gt;()
-                .AddSingleton&lt;ISingletomInstanceService&gt;(new SingletonService(Guid.Empty))
-                .AddTransient&lt;IBigService, BigService&gt;();
+<pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> Startup
+    <span style='color:#b060b0; '>{</span>
+    <span style='color:#d2cd86; '>.</span><span style='color:#d2cd86; '>.</span><span style='color:#d2cd86; '>.</span>
+    <span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>void</span> ConfigureServices<span style='color:#d2cd86; '>(</span>IServiceCollection services<span style='color:#d2cd86; '>)</span>
+    <span style='color:#b060b0; '>{</span>
+            services<span style='color:#d2cd86; '>.</span>AddTransient<span style='color:#d2cd86; '>&lt;</span>ITransientService<span style='color:#d2cd86; '>,</span> TransientService<span style='color:#d2cd86; '>></span><span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span>
+    <span style='color:#d2cd86; '>.</span>AddScoped<span style='color:#d2cd86; '>&lt;</span>IScopedService<span style='color:#d2cd86; '>,</span> ScopedService<span style='color:#d2cd86; '>></span><span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span>
+    <span style='color:#d2cd86; '>.</span>AddSingleton<span style='color:#d2cd86; '>&lt;</span>ISingletonService<span style='color:#d2cd86; '>,</span> SingletonService<span style='color:#d2cd86; '>></span><span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span>
+    <span style='color:#d2cd86; '>.</span>AddSingleton<span style='color:#d2cd86; '>&lt;</span>ISingletomInstanceService<span style='color:#d2cd86; '>></span><span style='color:#d2cd86; '>(</span><span style='color:#e66170; font-weight:bold; '>new</span> SingletonService<span style='color:#d2cd86; '>(</span>Guid<span style='color:#d2cd86; '>.</span>Empty<span style='color:#d2cd86; '>)</span><span style='color:#d2cd86; '>)</span>
+    <span style='color:#d2cd86; '>.</span>AddTransient<span style='color:#d2cd86; '>&lt;</span>IBigService<span style='color:#d2cd86; '>,</span> BigService<span style='color:#d2cd86; '>></span><span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span><span style='color:#b060b0; '>;</span>
 
-            services.AddMvc();
-        }
-    ...
-    }</code>
+            services<span style='color:#d2cd86; '>.</span>AddMvc<span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span><span style='color:#b060b0; '>;</span>
+    <span style='color:#b060b0; '>}</span>
+    <span style='color:#d2cd86; '>.</span><span style='color:#d2cd86; '>.</span><span style='color:#d2cd86; '>.</span>
+    <span style='color:#b060b0; '>}</span>
 </pre>
 
 <p>Вытащить из контейнера реализацию <code>ITransientService</code> можно следующим образом:</p>
 
-<pre class="no-result"> <code data-language="c#" class="rainbow">var transientService = container.GetService&lt;ITransientService&gt;();</code>
+<pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>var</span> transientService <span style='color:#d2cd86; '>=</span> container<span style='color:#d2cd86; '>.</span>GetService<span style='color:#d2cd86; '>&lt;</span>ITransientService<span style='color:#d2cd86; '>></span><span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span><span style='color:#b060b0; '>;</span>
 </pre>
     
 <p>Внедрять зависимости можно: 
     <ul type="square">
         <li>
             В конструктор
-            <pre class="no-result"> <code data-language="c#" class="rainbow">public class BigService : IBigService
-    {
-        public ITransientService TransientService { get; }
+            <pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> BigService <span style='color:#d2cd86; '>:</span> IBigService
+    <span style='color:#b060b0; '>{</span>
+        <span style='color:#e66170; font-weight:bold; '>public</span> ITransientService TransientService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
 
-        public BigService(ITransientService transientService)
-        {
-            TransientService = transientService;
-        }
-    }</code>
+        <span style='color:#e66170; font-weight:bold; '>public</span> BigService<span style='color:#d2cd86; '>(</span>ITransientService transientService<span style='color:#d2cd86; '>)</span>
+        <span style='color:#b060b0; '>{</span>
+            TransientService <span style='color:#d2cd86; '>=</span> transientService<span style='color:#b060b0; '>;</span>
+        <span style='color:#b060b0; '>}</span>
+    <span style='color:#b060b0; '>}</span>
 </pre>
         </li>
         <li>В свойство(необходим сеттер, используется для инжектирования необязательных зависимостей. Использовать не рекомендуется, т.к. порождает неявные зависимости)
-            <pre class="no-result"> <code data-language="c#" class="rainbow">public class BigService : IBigService
-    {
-        public ITransientService TransientService { get; set; }
-    }</code>
+            <pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> BigService <span style='color:#d2cd86; '>:</span> IBigService
+    <span style='color:#b060b0; '>{</span>
+        <span style='color:#e66170; font-weight:bold; '>public</span> ITransientService TransientService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#e66170; font-weight:bold; '>set</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
+    <span style='color:#b060b0; '>}</span>
 </pre>
         </li>
         <li>В метод(используется редко в случаях, когда классу зависимость нужна только в определенном методе)
-            <pre class="no-result"> <code data-language="c#" class="rainbow">public class BigService : IBigService
-    {
-        public ITransientService TransientService { get; }
+            <pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> BigService <span style='color:#d2cd86; '>:</span> IBigService
+    <span style='color:#b060b0; '>{</span>
+        <span style='color:#e66170; font-weight:bold; '>public</span> ITransientService TransientService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
 
-        public StartBigService(ITransientService transientService)
-        {
-            ...
-        }
-    }</code>
-</pre></li>
+        <span style='color:#e66170; font-weight:bold; '>public</span> StartBigService<span style='color:#d2cd86; '>(</span>ITransientService transientService<span style='color:#d2cd86; '>)</span>
+        <span style='color:#b060b0; '>{</span>
+            <span style='color:#d2cd86; '>.</span><span style='color:#d2cd86; '>.</span><span style='color:#d2cd86; '>.</span>
+        <span style='color:#b060b0; '>}</span>
+    <span style='color:#b060b0; '>}</span>
+</pre>
+        </li>
     </ul>
 </p>
 
@@ -172,53 +173,53 @@ var container = serviceCollection.BuildServiceProvider();</code>
     </ul>
 </p>
     
-<pre class="no-result"> <code data-language="c#" class="rainbow">public class DependencyInjectionController : Controller
-    {
-        public ITransientService TransientService { get; }
-        public IScopedService ScopedService { get; }
-        public ISingletonService SingletonService { get; }
-        public ISingletomInstanceService SingletomInstanceService { get; }
-        public IBigService BigService { get; }
+<pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> DependencyInjectionController <span style='color:#d2cd86; '>:</span> Controller
+    <span style='color:#b060b0; '>{</span>
+    <span style='color:#e66170; font-weight:bold; '>public</span> ITransientService TransientService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
+    <span style='color:#e66170; font-weight:bold; '>public</span> IScopedService ScopedService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
+    <span style='color:#e66170; font-weight:bold; '>public</span> ISingletonService SingletonService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
+    <span style='color:#e66170; font-weight:bold; '>public</span> ISingletomInstanceService SingletomInstanceService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
+    <span style='color:#e66170; font-weight:bold; '>public</span> IBigService BigService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
 
-        public DependencyInjectionController(ITransientService transientService, IScopedService scopedService,
-            ISingletonService singletonService, ISingletomInstanceService singletomInstanceService, IBigService bigService)
-        {
-            TransientService = transientService;
-            ScopedService = scopedService;
-            SingletonService = singletonService;
-            SingletomInstanceService = singletomInstanceService;
-            BigService = bigService;
-        }
+    <span style='color:#e66170; font-weight:bold; '>public</span> DependencyInjectionController<span style='color:#d2cd86; '>(</span>ITransientService transientService<span style='color:#d2cd86; '>,</span> IScopedService scopedService<span style='color:#d2cd86; '>,</span>
+            ISingletonService singletonService<span style='color:#d2cd86; '>,</span> ISingletomInstanceService singletomInstanceService<span style='color:#d2cd86; '>,</span> IBigService bigService<span style='color:#d2cd86; '>)</span>
+    <span style='color:#b060b0; '>{</span>
+            TransientService <span style='color:#d2cd86; '>=</span> transientService<span style='color:#b060b0; '>;</span>
+            ScopedService <span style='color:#d2cd86; '>=</span> scopedService<span style='color:#b060b0; '>;</span>
+            SingletonService <span style='color:#d2cd86; '>=</span> singletonService<span style='color:#b060b0; '>;</span>
+            SingletomInstanceService <span style='color:#d2cd86; '>=</span> singletomInstanceService<span style='color:#b060b0; '>;</span>
+            BigService <span style='color:#d2cd86; '>=</span> bigService<span style='color:#b060b0; '>;</span>
+    <span style='color:#b060b0; '>}</span>
 
-        public IActionResult Index()
-        {
-            ViewBag.Transient = TransientService;
-            ViewBag.Scoped = ScopedService;
-            ViewBag.Singleton = SingletonService;
-            ViewBag.SingletonInstance = SingletomInstanceService;
+    <span style='color:#e66170; font-weight:bold; '>public</span> IActionResult Index<span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span>
+    <span style='color:#b060b0; '>{</span>
+            ViewBag<span style='color:#d2cd86; '>.</span>Transient <span style='color:#d2cd86; '>=</span> TransientService<span style='color:#b060b0; '>;</span>
+            ViewBag<span style='color:#d2cd86; '>.</span>Scoped <span style='color:#d2cd86; '>=</span> ScopedService<span style='color:#b060b0; '>;</span>
+            ViewBag<span style='color:#d2cd86; '>.</span>Singleton <span style='color:#d2cd86; '>=</span> SingletonService<span style='color:#b060b0; '>;</span>
+            ViewBag<span style='color:#d2cd86; '>.</span>SingletonInstance <span style='color:#d2cd86; '>=</span> SingletomInstanceService<span style='color:#b060b0; '>;</span>
             
-            ViewBag.Service = BigService;
-            return View();
-        }
-    }</code>
+            ViewBag<span style='color:#d2cd86; '>.</span>Service <span style='color:#d2cd86; '>=</span> BigService<span style='color:#b060b0; '>;</span>
+    <span style='color:#e66170; font-weight:bold; '>return</span> View<span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span><span style='color:#b060b0; '>;</span>
+    <span style='color:#b060b0; '>}</span>
+    <span style='color:#b060b0; '>}</span>
 </pre>
     
-<pre class="no-result"> <code data-language="c#" class="rainbow">public class BigService : IBigService
-    {
-        public ITransientService TransientService { get; }
-        public IScopedService ScopedService { get; }
-        public ISingletonService SingletonService { get; }
-        public ISingletomInstanceService SingletomInstanceService { get; }
+    <pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> BigService <span style='color:#d2cd86; '>:</span> IBigService
+    <span style='color:#b060b0; '>{</span>
+    <span style='color:#e66170; font-weight:bold; '>public</span> ITransientService TransientService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
+    <span style='color:#e66170; font-weight:bold; '>public</span> IScopedService ScopedService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
+    <span style='color:#e66170; font-weight:bold; '>public</span> ISingletonService SingletonService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
+    <span style='color:#e66170; font-weight:bold; '>public</span> ISingletomInstanceService SingletomInstanceService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
 
-        public BigService(ITransientService transientService, IScopedService scopedService,
-            ISingletonService singletonService, ISingletomInstanceService singletomInstanceService)
-        {
-            TransientService = transientService;
-            ScopedService = scopedService;
-            SingletonService = singletonService;
-            SingletomInstanceService = singletomInstanceService;
-        }
-    }</code>
+    <span style='color:#e66170; font-weight:bold; '>public</span> BigService<span style='color:#d2cd86; '>(</span>ITransientService transientService<span style='color:#d2cd86; '>,</span> IScopedService scopedService<span style='color:#d2cd86; '>,</span>
+            ISingletonService singletonService<span style='color:#d2cd86; '>,</span> ISingletomInstanceService singletomInstanceService<span style='color:#d2cd86; '>)</span>
+    <span style='color:#b060b0; '>{</span>
+            TransientService <span style='color:#d2cd86; '>=</span> transientService<span style='color:#b060b0; '>;</span>
+            ScopedService <span style='color:#d2cd86; '>=</span> scopedService<span style='color:#b060b0; '>;</span>
+            SingletonService <span style='color:#d2cd86; '>=</span> singletonService<span style='color:#b060b0; '>;</span>
+            SingletomInstanceService <span style='color:#d2cd86; '>=</span> singletomInstanceService<span style='color:#b060b0; '>;</span>
+    <span style='color:#b060b0; '>}</span>
+    <span style='color:#b060b0; '>}</span>
 </pre>
     
 <h4>DependencyInjectionController</h4>
