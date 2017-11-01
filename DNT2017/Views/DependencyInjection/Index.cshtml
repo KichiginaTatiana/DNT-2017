@@ -1,6 +1,10 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+    <environment names="Development">
+        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" type="text/css" href="css/StyleSheet.css">
+    </environment>
 </head>
 
 <body>
@@ -10,7 +14,7 @@
 
 <h2>Механизм внедрения зависимостей в ASP.NET Core</h2>
 <h3>SOLID</h3>
-<ul type="square">
+<ul>
     <li><b>Single responsibility</b> (Принцип единственной ответственности) обо­зна­ча­ет, что каж­дый объ­ект дол­жен иметь одну обя­зан­ность и эта обя­зан­ность должна быть пол­но­стью инкап­су­ли­ро­вана в класс.</li>
     <li><b>Open-closed</b> (Принцип открытости/закрытости) декларирует, что про­грамм­ные сущ­но­сти (клас­сы, моду­ли, функ­ции и т. п.) должны быть открыты для рас­ши­ре­ния, но закрыты для изме­не­ния.</li>
     <li><b>Liskov substitution</b> (Прин­цип под­ста­новки Бар­бары Лис­ков) — функ­ции, кото­рые исполь­зуют базо­вый тип, должны иметь воз­мож­ность исполь­зо­вать под­типы базо­вого типа не зная об этом.</li>
@@ -23,7 +27,7 @@
     Для этого необходимо проверить, зависят ли классы от каких-то других классов(непосредственно инстанцируют объекты других классов и т.д, что является <b>неявным управлением зависимостями</b>) и если эта зависимость имеет место, заменить на зависимость от абстракции. 
 </p>  
 
-<pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> BigService <span style='color:#d2cd86; '>:</span> IBigService
+<pre><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> BigService <span style='color:#d2cd86; '>:</span> IBigService
     <span style='color:#b060b0; '>{</span>
     <span style='color:#e66170; font-weight:bold; '>public</span> ITransientService TransientService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
     <span style='color:#e66170; font-weight:bold; '>public</span> IScopedService ScopedService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
@@ -44,7 +48,7 @@
     При явном управлении зависимостями ожидается, что все нужные значения будут переданы в конструктор извне. Явными следует делать имена файлов, пути, порты, неудобны зависимости(файлы, консоль, UI, сеть, БД и т.д.), другие сервисы, алгоритмы, если их понадобится менять(стратегии), реализацию структуры данных, если ее понадобится менять.
 </p>
 
-<pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> BigService <span style='color:#d2cd86; '>:</span> IBigService
+<pre><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> BigService <span style='color:#d2cd86; '>:</span> IBigService
     <span style='color:#b060b0; '>{</span>
         <span style='color:#e66170; font-weight:bold; '>public</span> ITransientService TransientService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
         <span style='color:#e66170; font-weight:bold; '>public</span> IScopedService ScopedService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
@@ -68,7 +72,7 @@
 
 <p>
     <b>Явное управление зависимостями:</b>
-    <ul type="square">
+    <ul>
         <li>Не вызывать статические методы</li>
         <li>Не вызывать конструкторы</li>
         <li>Ссылки на объекты передавать в конструктор</li>
@@ -90,7 +94,7 @@
 <h3>Примеры регистрации и внедрения зависимостей</h3>
 <p>Добавление зависимостей в контейнер производится с помощью дженерик методов <code>AddTransient&lt;TServise, TImplementation&gt;(IServiseCollection)</code>, <code>AddScoped&lt;TServise, TImplementation&gt;(IServiseCollection)</code>, <code>AddSingleton&lt;TServise, TImplementation&gt;(IServiseCollection)</code> класса <code>ServiceCollection</code>.</p>
 
-<pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>var</span> serviceCollection <span style='color:#d2cd86; '>=</span> <span style='color:#e66170; font-weight:bold; '>new</span> ServiceCollection<span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span>
+<pre><span style='color:#e66170; font-weight:bold; '>var</span> serviceCollection <span style='color:#d2cd86; '>=</span> <span style='color:#e66170; font-weight:bold; '>new</span> ServiceCollection<span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span>
     <span style='color:#d2cd86; '>.</span>AddTransient<span style='color:#d2cd86; '>&lt;</span>ITransientService<span style='color:#d2cd86; '>,</span> TransientService<span style='color:#d2cd86; '>></span><span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span>
     <span style='color:#d2cd86; '>.</span>AddScoped<span style='color:#d2cd86; '>></span>IScopedService<span style='color:#d2cd86; '>,</span> ScopedService<span style='color:#d2cd86; '>></span><span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span>
     <span style='color:#d2cd86; '>.</span>AddSingleton<span style='color:#d2cd86; '>></span>ISingletonService<span style='color:#d2cd86; '>,</span> SingletonService<span style='color:#d2cd86; '>></span><span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span>
@@ -102,7 +106,7 @@
     
 <p>В ASP.NET Core регистрация зависимостей происходит в методе <code>ConfigureServices()</code> класса <code>Startup</code>.</p>
     
-<pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> Startup
+<pre><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> Startup
     <span style='color:#b060b0; '>{</span>
     <span style='color:#d2cd86; '>.</span><span style='color:#d2cd86; '>.</span><span style='color:#d2cd86; '>.</span>
     <span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>void</span> ConfigureServices<span style='color:#d2cd86; '>(</span>IServiceCollection services<span style='color:#d2cd86; '>)</span>
@@ -121,14 +125,13 @@
 
 <p>Вытащить из контейнера реализацию <code>ITransientService</code> можно следующим образом:</p>
 
-<pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>var</span> transientService <span style='color:#d2cd86; '>=</span> container<span style='color:#d2cd86; '>.</span>GetService<span style='color:#d2cd86; '>&lt;</span>ITransientService<span style='color:#d2cd86; '>></span><span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span><span style='color:#b060b0; '>;</span>
+<pre><span style='color:#e66170; font-weight:bold; '>var</span> transientService <span style='color:#d2cd86; '>=</span> container<span style='color:#d2cd86; '>.</span>GetService<span style='color:#d2cd86; '>&lt;</span>ITransientService<span style='color:#d2cd86; '>></span><span style='color:#d2cd86; '>(</span><span style='color:#d2cd86; '>)</span><span style='color:#b060b0; '>;</span>
 </pre>
     
 <p>Внедрять зависимости можно: 
-    <ul type="square">
-        <li>
-            В конструктор
-            <pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> BigService <span style='color:#d2cd86; '>:</span> IBigService
+    <ul>
+        <li><b>В конструктор</b>
+            <pre><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> BigService <span style='color:#d2cd86; '>:</span> IBigService
     <span style='color:#b060b0; '>{</span>
         <span style='color:#e66170; font-weight:bold; '>public</span> ITransientService TransientService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
 
@@ -139,15 +142,15 @@
     <span style='color:#b060b0; '>}</span>
 </pre>
         </li>
-        <li>В свойство(необходим сеттер, используется для инжектирования необязательных зависимостей. Использовать не рекомендуется, т.к. порождает неявные зависимости)
-            <pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> BigService <span style='color:#d2cd86; '>:</span> IBigService
+        <li><b>В свойство</b>(необходим сеттер, используется для инжектирования необязательных зависимостей. Использовать не рекомендуется, т.к. порождает неявные зависимости)
+            <pre><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> BigService <span style='color:#d2cd86; '>:</span> IBigService
     <span style='color:#b060b0; '>{</span>
         <span style='color:#e66170; font-weight:bold; '>public</span> ITransientService TransientService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#e66170; font-weight:bold; '>set</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
     <span style='color:#b060b0; '>}</span>
 </pre>
         </li>
-        <li>В метод(используется редко в случаях, когда классу зависимость нужна только в определенном методе)
-            <pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> BigService <span style='color:#d2cd86; '>:</span> IBigService
+        <li><b>В метод</b>(используется редко в случаях, когда классу зависимость нужна только в определенном методе)
+            <pre><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> BigService <span style='color:#d2cd86; '>:</span> IBigService
     <span style='color:#b060b0; '>{</span>
         <span style='color:#e66170; font-weight:bold; '>public</span> ITransientService TransientService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
 
@@ -163,7 +166,7 @@
 
 <h3>Жизненный цикл компонентов</h3>
 <p>Зависимости различаются сроком жизни. Они могут быть:
-    <ul type="square">
+    <ul>
         <li><b>Singleton</b> - реализация <code>IServiceCollection</code> гарантирует, что будет создавать только один экземпляр типа <code>TService</code>, а значит, он будет singleton-экземпляром. 
         После первого вызова <code>GetService</code>, инициирующего создание экземпляра <code>TService</code>, тот же экземпляр всегда будет возвращаться в течение срока жизни <code>IServiceCollection</code>.</li>
         <li><b>Transient</b> - реализация <code>IServiceCollection</code> возвращает новый экземпляр при каждом вызове <code>GetService</code>, гарантируя, что вы всегда будете получать новый экземпляр типа <code>TService</code>.</li>
@@ -173,7 +176,7 @@
     </ul>
 </p>
     
-<pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> DependencyInjectionController <span style='color:#d2cd86; '>:</span> Controller
+<pre><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> DependencyInjectionController <span style='color:#d2cd86; '>:</span> Controller
     <span style='color:#b060b0; '>{</span>
     <span style='color:#e66170; font-weight:bold; '>public</span> ITransientService TransientService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
     <span style='color:#e66170; font-weight:bold; '>public</span> IScopedService ScopedService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
@@ -204,7 +207,7 @@
     <span style='color:#b060b0; '>}</span>
 </pre>
     
-    <pre style='color:#d1d1d1;background:#111111;'><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> BigService <span style='color:#d2cd86; '>:</span> IBigService
+    <pre><span style='color:#e66170; font-weight:bold; '>public</span> <span style='color:#e66170; font-weight:bold; '>class</span> BigService <span style='color:#d2cd86; '>:</span> IBigService
     <span style='color:#b060b0; '>{</span>
     <span style='color:#e66170; font-weight:bold; '>public</span> ITransientService TransientService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
     <span style='color:#e66170; font-weight:bold; '>public</span> IScopedService ScopedService <span style='color:#b060b0; '>{</span> <span style='color:#e66170; font-weight:bold; '>get</span><span style='color:#b060b0; '>;</span> <span style='color:#b060b0; '>}</span>
