@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace Lab4
 {
     public class VacancyViewer
     {
-        private HttpClient Client { get; set; }
+        private HttpClient Client { get; }
 
         public VacancyViewer()
         {
@@ -24,7 +25,61 @@ namespace Lab4
 
         public async Task View()
         {
-            var vacancies = await GetVacancies("vacancies");
+            var allVacancies = await GetVacancies("vacancies");
+
+            Console.WriteLine("1. Названия профессий в вакансиях, объявленная зарплата которых превышает либо равна 120000 руб.");
+            var vacancies = allVacancies.Where(v => v.Salary != null
+                                                    && (v.Salary.To != null && v.Salary.From != null &&
+                                                        (v.Salary.To + v.Salary.From) / 2 >= 120000
+                                                        || v.Salary.To != null && v.Salary.To >= 120000
+                                                        || v.Salary.From != null && v.Salary.From >= 120000));
+            foreach (var vacancy in vacancies)
+            {
+                Console.WriteLine(vacancy.Name);
+            }
+
+            Console.WriteLine("2. Названия ключевых навыков в вакансиях, объявленная зарплата которых превышает либо равна 120000 руб.");
+            foreach (var vacancy in vacancies)
+            {
+                Console.WriteLine(vacancy.Name);
+                if (vacancy.KeySkills == null || vacancy.KeySkills.Length == 0)
+                {
+                    Console.WriteLine("Нет ключевых навыков");
+                    continue;
+                }
+
+                foreach (var skill in vacancy.KeySkills)
+                {
+                    Console.WriteLine(skill);
+                }
+            }
+
+            Console.WriteLine("3. Названия профессий в вакансиях, объявленная зарплата которых менее 15000 руб.");
+            vacancies = allVacancies.Where(v => v.Salary != null
+                                                    && (v.Salary.To != null && v.Salary.From != null &&
+                                                        (v.Salary.To + v.Salary.From) / 2 < 15000
+                                                        || v.Salary.To != null && v.Salary.To < 15000
+                                                        || v.Salary.From != null && v.Salary.From < 15000));
+            foreach (var vacancy in vacancies)
+            {
+                Console.WriteLine(vacancy.Name);
+            }
+
+            Console.WriteLine("4. Названия ключивых навыков в вакансиях, объявленная зарплата которых менее 15000 руб.");
+            foreach (var vacancy in vacancies)
+            {
+                Console.WriteLine(vacancy.Name);
+                if (vacancy.KeySkills == null || vacancy.KeySkills.Length == 0)
+                {
+                    Console.WriteLine("Нет ключевых навыков");
+                    continue;
+                }
+
+                foreach (var skill in vacancy.KeySkills)
+                {
+                    Console.WriteLine(skill);
+                }
+            }
         }
 
         private async Task<IEnumerable<Vacancy>> GetVacancies(string uri)

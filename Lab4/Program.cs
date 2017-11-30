@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Lab4
 {
@@ -7,6 +8,7 @@ namespace Lab4
         static void Main(string[] args)
         {
             Task.Run(async () => await new VacancyViewer().View()).Wait();
+            Console.ReadKey();
         }
     }
 }
