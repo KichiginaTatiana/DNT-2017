@@ -32,7 +32,8 @@ namespace Lab4
                                                     && (v.Salary.To != null && v.Salary.From != null &&
                                                         (v.Salary.To + v.Salary.From) / 2 >= 120000
                                                         || v.Salary.To != null && v.Salary.To >= 120000
-                                                        || v.Salary.From != null && v.Salary.From >= 120000));
+                                                        || v.Salary.From != null && v.Salary.From >= 120000)
+                                                    && v.Salary.Currency == "RUR");
             foreach (var vacancy in vacancies)
             {
                 Console.WriteLine(vacancy.Name);
@@ -84,23 +85,23 @@ namespace Lab4
 
         private async Task<IEnumerable<Vacancy>> GetVacancies(string uri)
         {
-            var response = await SendRequest(uri);
+            var response = await SendRequest<Response>(uri);
             var res = new List<Vacancy>(response.Items);
             for (var i = 1; i < response.Pages; i++)
             {
-                res.AddRange((await SendRequest(uri + "?per_page=" + response.PerPage + "&page=" + i)).Items);
+                res.AddRange((await SendRequest<Response>(uri + "?per_page=" + response.PerPage + "&page=" + i)).Items);
             }
             return res;
         }
 
-        private async Task<Response> SendRequest(string uri)
+        private async Task<T> SendRequest<T>(string uri)
         {
             var httpResponseMessage = await Client.GetAsync(uri);
             if (!httpResponseMessage.IsSuccessStatusCode)
-                return null;
+                return default(T);
 
             var content = await httpResponseMessage.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<Response>(content);
+            return (T) JsonConvert.DeserializeObject<T>(content);
         }
     }
 }
