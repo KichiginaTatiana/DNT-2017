@@ -25,6 +25,7 @@ namespace Lab4
 
         public async Task View()
         {
+            var currencies = await GetCurrencies("dictionaries");
             var allVacancies = await GetVacancies("vacancies");
 
             Console.WriteLine("1. Названия профессий в вакансиях, объявленная зарплата которых превышает либо равна 120000 руб.");
@@ -85,13 +86,19 @@ namespace Lab4
 
         private async Task<IEnumerable<Vacancy>> GetVacancies(string uri)
         {
-            var response = await SendRequest<Response>(uri);
+            var response = await SendRequest<GetVacanciesResponse>(uri);
             var res = new List<Vacancy>(response.Items);
             for (var i = 1; i < response.Pages; i++)
             {
-                res.AddRange((await SendRequest<Response>(uri + "?per_page=" + response.PerPage + "&page=" + i)).Items);
+                res.AddRange((await SendRequest<GetVacanciesResponse>(uri + "?per_page=" + response.PerPage + "&page=" + i)).Items);
             }
             return res;
+        }
+
+        private async Task<Dictionary<string, decimal>> GetCurrencies(string uri)
+        {
+            var response = await SendRequest<GetCurrenciesResponse>(uri);
+            return response.Currency.ToDictionary(x => x.Code, x => x.Rate);
         }
 
         private async Task<T> SendRequest<T>(string uri)
@@ -101,7 +108,7 @@ namespace Lab4
                 return default(T);
 
             var content = await httpResponseMessage.Content.ReadAsStringAsync();
-            return (T) JsonConvert.DeserializeObject<T>(content);
+            return JsonConvert.DeserializeObject<T>(content);
         }
     }
 }

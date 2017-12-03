@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Lab4
 {
-    public class Response
+    public class GetVacanciesResponse
     {
         public IEnumerable<Vacancy> Items { get; set; }
 
