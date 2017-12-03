@@ -10,6 +10,6 @@ namespace Lab4
         public Salary Salary { get; set; }
 
         [JsonProperty("key_skills")]
-        public KeySkill[] KeySkills { get; set; }
+        public IEnumerable<KeySkill> KeySkills { get; set; }
     }
 }

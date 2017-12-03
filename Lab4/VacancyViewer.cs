@@ -12,6 +12,8 @@ namespace Lab4
     {
         private HttpClient Client { get; }
 
+        private Dictionary<string, decimal> _currencies;
+
         public VacancyViewer()
         {
             Client = new HttpClient()
@@ -25,16 +27,13 @@ namespace Lab4
 
         public async Task View()
         {
-            var currencies = await GetCurrencies("dictionaries");
+            _currencies = await GetCurrencies("dictionaries");
             var allVacancies = await GetVacancies("vacancies");
 
             Console.WriteLine("1. Названия профессий в вакансиях, объявленная зарплата которых превышает либо равна 120000 руб.");
-            var vacancies = allVacancies.Where(v => v.Salary != null
-                                                    && (v.Salary.To != null && v.Salary.From != null &&
-                                                        (v.Salary.To + v.Salary.From) / 2 >= 120000
-                                                        || v.Salary.To != null && v.Salary.To >= 120000
-                                                        || v.Salary.From != null && v.Salary.From >= 120000)
-                                                    && v.Salary.Currency == "RUR");
+            var vacancies = allVacancies.Where(v => v.Salary != null &&
+                                                    IsSalaryOk(v.Salary, 120000,
+                                                        (salary, wantedSalary) => salary >= wantedSalary));
             foreach (var vacancy in vacancies)
             {
                 Console.WriteLine(vacancy.Name);
@@ -44,7 +43,7 @@ namespace Lab4
             foreach (var vacancy in vacancies)
             {
                 Console.WriteLine(vacancy.Name);
-                if (vacancy.KeySkills == null || vacancy.KeySkills.Length == 0)
+                if (vacancy.KeySkills == null || !vacancy.KeySkills.Any())
                 {
                     Console.WriteLine("Нет ключевых навыков");
                     continue;
@@ -57,21 +56,19 @@ namespace Lab4
             }
 
             Console.WriteLine("3. Названия профессий в вакансиях, объявленная зарплата которых менее 15000 руб.");
-            vacancies = allVacancies.Where(v => v.Salary != null
-                                                    && (v.Salary.To != null && v.Salary.From != null &&
-                                                        (v.Salary.To + v.Salary.From) / 2 < 15000
-                                                        || v.Salary.To != null && v.Salary.To < 15000
-                                                        || v.Salary.From != null && v.Salary.From < 15000));
+            vacancies = allVacancies.Where(v => v.Salary != null &&
+                                                IsSalaryOk(v.Salary, 15000,
+                                                    (salary, wantedSalary) => salary < wantedSalary));
             foreach (var vacancy in vacancies)
             {
                 Console.WriteLine(vacancy.Name);
             }
 
-            Console.WriteLine("4. Названия ключивых навыков в вакансиях, объявленная зарплата которых менее 15000 руб.");
+            Console.WriteLine("4. Названия ключевых навыков в вакансиях, объявленная зарплата которых менее 15000 руб.");
             foreach (var vacancy in vacancies)
             {
                 Console.WriteLine(vacancy.Name);
-                if (vacancy.KeySkills == null || vacancy.KeySkills.Length == 0)
+                if (vacancy.KeySkills == null || !vacancy.KeySkills.Any())
                 {
                     Console.WriteLine("Нет ключевых навыков");
                     continue;
@@ -82,6 +79,20 @@ namespace Lab4
                     Console.WriteLine(skill);
                 }
             }
+        }
+
+        private bool IsSalaryOk(Salary salary, decimal wantedSalaryInRoubles,
+            Func<decimal, decimal, bool> isSalaryOkFunc)
+        {
+            if (!_currencies.TryGetValue(salary.Currency, out var roublesToCurrentCurrencyCoefficient))
+                return false;
+
+            var wantedSalaryInCurrentCurrency = roublesToCurrentCurrencyCoefficient * wantedSalaryInRoubles;
+
+            if (salary.To != null && salary.From != null)
+                return isSalaryOkFunc((salary.To.Value + salary.From.Value) / 2, wantedSalaryInCurrentCurrency);
+
+            return isSalaryOkFunc(salary.To ?? salary.From.Value, wantedSalaryInCurrentCurrency);
         }
 
         private async Task<IEnumerable<Vacancy>> GetVacancies(string uri)

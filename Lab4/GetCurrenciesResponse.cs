@@ -1,7 +1,9 @@
-﻿namespace Lab4
+﻿using System.Collections.Generic;
+
+namespace Lab4
 {
     public class GetCurrenciesResponse
     {
-        public Currency[] Currency { get; set; }
+        public IEnumerable<Currency> Currency { get; set; }
     }
 }
