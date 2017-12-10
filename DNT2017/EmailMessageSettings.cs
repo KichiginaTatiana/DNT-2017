@@ -2,7 +2,7 @@
 {
     public class EmailMessageSettings
     {
-        public string SmptpServer { get; set; }
+        public string SmtpServer { get; set; }
 
         public int Port { get; set; }
 
@@ -10,6 +10,6 @@
 
         public string Password { get; set; }
 
-        public string MailRecipient { get; set; }
+        public string EmailReciever { get; set; }
     }
 }
