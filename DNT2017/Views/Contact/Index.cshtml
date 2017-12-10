@@ -1,0 +1,36 @@
+﻿@model Message;
+
+@{
+    ViewData["Title"] = "Лабораторная работа 2";
+}
+
+<h2>Обратная связь</h2>
+
+<form method="post" action="~/Contact/Send"/>
+
+<p>
+    <b>Email</b><br>
+    <input asp-for="Email" type="text" size="80"/><br/>
+    <span asp-validation-for="Email" class="text-danger"/>
+</p>
+
+<p>
+    <b>Тема сообщения</b><br>
+    <input asp-for="Topic" type="text" size="80"/><br/>
+    <span asp-validation-for="Topic" class="text-danger"/>
+</p>
+
+<p>
+    <b>Текст сообщения</b><br>
+    <textarea asp-for="Text" cols="82" rows="10" wrap="soft"></textarea> <br/>
+    <span asp-validation-for="Text" class="text-danger"/>
+</p>
+
+<p>
+    <input type="submit" value="Отправить">
+</p>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>

@@ -47,7 +47,7 @@ namespace DNT2017
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=DependencyInjection}/{action=Index}/{id?}");
+                    template: "{controller=Contact}/{action=Index}/{id?}");
             });
         }
     }
