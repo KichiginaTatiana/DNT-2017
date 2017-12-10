@@ -26,6 +26,8 @@ namespace DNT2017
                 .AddTransient<IBigService, BigService>();
 
             services.AddMvc();
+
+            services.Configure<EmailMessageSettings>(Configuration.GetSection("EmailMessageSettings"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
